@@ -1,9 +1,10 @@
-import { Component, ElementRef, HostBinding, HostListener, ViewChild, input } from '@angular/core';
-import { Note } from '../interfaces/note';
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Output, ViewChild, input, viewChild } from '@angular/core';
+import { INote } from '../interfaces/note';
 import { DateFnsModule } from 'ngx-date-fns';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AutofocusDirective } from '../directives/autofocus.directive';
+// import "@types/dom-speech-recognition";
 
 @Component({
 	standalone: true,
@@ -20,7 +21,7 @@ import { AutofocusDirective } from '../directives/autofocus.directive';
 			<div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-black/0 pointer-events-none"></div>
 		</button>
 		
-		<dialog #dialog class="backdrop:bg-black/60 max-w-2xl w-full h-[60vh] bg-slate-700 rounded-md open:flex open:flex-col relative" (click)="$event.stopPropagation()">
+		<dialog #dialog class="backdrop:bg-black/60  w-[100dvw] h-[100dvh] max-w-none max-h-none  bg-slate-700 md:max-w-2xl md:w-full md:h-[60vh] md:rounded-md open:flex open:flex-col relative" (click)="$event.stopPropagation()">
 			<div class="flex flex-1 flex-col gap-3 p-5">
 				<div class="flex">
 					<h4 class="flex-1 text-sm font-medium text-slate-300">
@@ -35,7 +36,7 @@ import { AutofocusDirective } from '../directives/autofocus.directive';
 					{{ note().text }}
 				</p>
 			</div>
-			<button type="button" class="w-full bg-slate-800 py-4 text-sm text-slate-300 outline-none font-medium group"> 
+			<button type="button" class="w-full bg-slate-800 py-4 text-sm text-slate-300 outline-none font-medium group" (click)="onDeleteNote()"> 
 				Deseja <span class="text-red-400 group-hover:underline">apagar essa nota</span>? 
 			</button>
 		</dialog>
@@ -44,6 +45,7 @@ import { AutofocusDirective } from '../directives/autofocus.directive';
 })
 export class NoteCardComponent {
 
+
 	private static number = 0;
 	id = `note-card-${++NoteCardComponent.number}`
 
@@ -51,7 +53,14 @@ export class NoteCardComponent {
 
 	@HostBinding('tabindex') tabindex = 0
 
-	@ViewChild('dialog') dialog!: ElementRef<HTMLDialogElement>;
+	dialog = viewChild<ElementRef<HTMLDialogElement>>('dialog');
 
-	note = input.required<Note>();
+	note = input.required<INote>();
+
+	@Output() delete = new EventEmitter();
+
+	onDeleteNote() {
+		this.delete.emit();
+		this.dialog()?.nativeElement.close();
+	}
 }

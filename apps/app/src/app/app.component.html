@@ -1,19 +1,19 @@
-<div class="py-12 mx-auto px-6 max-w-6xl space-y-6">
+<div class="py-12 mx-auto max-w-6xl space-y-6 px-5">
     <img src="assets/logo-outline.svg" alt="NWL Expert" />
 
     <form class="w-full mt-6">
-        <input type="text"
+        <input #searchInput type="text"
             class="w-full bg-transparent text-3xl font-semibold tracking-tight placeholder:text-slate-500 outline-none"
-            placeholder="Busque em suas notas..." />
+            placeholder="Busque em suas notas..." [value]="search()" (input)="search.set(searchInput.value)" />
     </form>
 
     <hr class="border-slate-700" />
 
-    <div class="grid grid-cols-3 gap-6 auto-rows-[250px]">
-        <app-new-note-card></app-new-note-card>
+    <div class="grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[250px]">
+        <app-new-note-card (created)="onCreatedNote($event)"></app-new-note-card>
 
-        @for (note of notes; track $index) {
-            <app-note-card [note]="note"></app-note-card>
+        @for (note of filteredNotes(); track $index) {
+            <app-note-card [note]="note" (delete)="onDeleteNote(note)"></app-note-card>
         }
     </div>
 </div>

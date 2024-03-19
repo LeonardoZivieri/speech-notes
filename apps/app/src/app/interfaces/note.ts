@@ -1,1 +1,1 @@
-export interface Note { text: string, date: Date }
+export interface INote { id?: string, text: string, date: Date }
